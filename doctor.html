@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Appointment Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+            background-image: url("pat.jpg"); /* Reference to pat.jpg */
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        /* Form container */
+        .appointment-form {
+            background-color: rgba(255, 255, 255, 0.9); /* Adds transparency to the form */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            opacity: 0.9;
+        }
+
+        .appointment-form h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+            font-weight: bold; /* Make the heading bold */
+        }
+
+        /* Input and label styling */
+        label {
+            font-size: 16px;
+            color: #555;
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold; /* Make the labels bold */
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="date"],
+        input[type="tel"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        /* Button styling */
+        .appointment-form button {
+            width: 100%;
+            padding: 10px;
+            background-color: #28a745;
+            border: none;
+            border-radius: 5px;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .appointment-form button:hover {
+            background-color: #218838;
+        }
+
+        .reminder-message {
+            display: none;
+            margin-top: 20px;
+            color: #ff0000;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="appointment-form">
+    <h1>Doctor Appointment Form</h1>
+
+    <!-- Doctor's Name -->
+    <label for="doctor-name">Doctor's Name:</label>
+    <input type="text" id="doctor-name" placeholder="Enter doctor's name" required>
+
+    <!-- Appointment Date -->
+    <label for="appointment-date">Appointment Date:</label>
+    <input type="date" id="appointment-date" required>
+
+    <!-- Patient's Name -->
+    <label for="patient-name">Patient's Name:</label>
+    <input type="text" id="patient-name" placeholder="Enter patient's name" required>
+
+    <!-- Email -->
+    <label for="email">Email for Reminder:</label>
+    <input type="email" id="email" placeholder="Enter your email" required>
+
+    <!-- Phone Number -->
+    <label for="phone-number">Phone Number for Reminder:</label>
+    <input type="tel" id="phone-number" placeholder="Enter your phone number" required>
+
+    <!-- Submit Button -->
+    <button type="submit" onclick="submitAppointment()">Submit Appointment</button>
+
+    <!-- Reminder Message -->
+    <p class="reminder-message" id="reminder-message">Your appointment has been successfully scheduled!</p>
+</div>
+
+<script>
+    function submitAppointment() {
+        // Get the input values from the form
+        const doctorName = document.getElementById('doctor-name').value;
+        const appointmentDate = document.getElementById('appointment-date').value;
+        const patientName = document.getElementById('patient-name').value;
+        const email = document.getElementById('email').value;
+        const phoneNumber = document.getElementById('phone-number').value;
+
+        // Check if all fields are filled
+        if (!doctorName || !appointmentDate || !patientName || !email || !phoneNumber) {
+            alert("Please fill all the fields.");
+            return;
+        }
+
+        // Store the appointment details locally (could also use a server-side storage)
+        localStorage.setItem('appointment', JSON.stringify({
+            doctorName: doctorName,
+            appointmentDate: appointmentDate,
+            patientName: patientName,
+            email: email,
+            phoneNumber: phoneNumber
+        }));
+
+        // Show a confirmation message
+        document.getElementById('reminder-message').style.display = 'block';
+
+        // Set the reminder for the appointment date
+        scheduleReminder(appointmentDate, doctorName, patientName);
+    }
+
+    function scheduleReminder(date, doctorName, patientName) {
+        const currentDate = new Date().toISOString().split('T')[0];
+        
+        if (currentDate === date) {
+            alert(`Reminder: You have an appointment with Dr. ${doctorName} today for ${patientName}.`);
+        } else {
+            // Check if the reminder is for a future date
+            const appointmentDate = new Date(date);
+            const today = new Date();
+
+            const timeDifference = appointmentDate - today;
+            if (timeDifference > 0) {
+                // Set a reminder for the user on the appointment day
+                setTimeout(() => {
+                    alert(`Reminder: You have an appointment with Dr. ${doctorName} today for ${patientName}.`);
+                }, timeDifference);
+            }
+        }
+    }
+</script>
+
+</body>
+</html>
